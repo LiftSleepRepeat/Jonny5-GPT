@@ -46,6 +46,11 @@ class LocalCache(MemoryProviderSingleton):
                         f.write(file_content)
 
                     loaded = orjson.loads(file_content)
+                    embeddings = loaded.get("embeddings")
+                    if embeddings is not None:
+                        loaded["embeddings"] = np.array(
+                            embeddings, dtype=np.float32
+                        )
                     self.data = CacheContent(**loaded)
             except orjson.JSONDecodeError:
                 print(f"Error: The file '{self.filename}' is not in JSON format.")
